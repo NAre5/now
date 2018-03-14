@@ -64,6 +64,18 @@ def addPoll(pid,party,state,res,filetype):
         file = open('copystates.txt', 'a+')
     else:
         file = open('copystates.bin', 'ab+')
+    context = file.readlines()
+    existstate = False
+    for line in context:
+        li = line.strip().split(',')[1]
+        if state == li:
+            existstate = True
+            break
+    file.close()
+    if not existstate:
+        print "fail"
+        return "fail"
+
 
     return "fail"
 
@@ -122,4 +134,10 @@ for line in con:
     print line.strip().split(',')[3]
 '''
 #addCandidate('eran','shvili','Democratic','t')
-addState('IS', 'ISRAEL', 'b')
+#addState('IS', 'ISRAEL', 'b')
+#addPoll(12,'asd','ALL','ewq','t')
+line = "TB1,Republican,AR,Ted Cruz 27%-Marco Rubio 23%-Donald Trump 23%-Ben Carson 11%"
+line = line.strip()
+split = line.split('%')
+for i in split:
+    print i.split(' ')[-1]
