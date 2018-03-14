@@ -32,7 +32,7 @@ def addState(sid, sname,filetype):
     if filetype == 't':
         file = open('copystates.txt', 'a+')
     else:
-        file = open('copystates.txt', 'ab+')
+        file = open('copystates.bin', 'ab+')
     context = file.readlines()
     existstate = False
     for line in context:

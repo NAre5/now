@@ -1,0 +1,14 @@
+sname,sid
+Arkansas,AR
+California,CA
+Florida,FL
+Idaho,ID
+Illinois,IL
+Indiana,IN
+Maryland,MD
+Michigan,MI
+Nevada,NV
+New York,NY
+Texas,TX
+Ohio,OH
+Israel,IS
