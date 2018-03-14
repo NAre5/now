@@ -136,6 +136,7 @@ for line in con:
 #addCandidate('eran','shvili','Democratic','t')
 #addState('IS', 'ISRAEL', 'b')
 #addPoll(12,'asd','ALL','ewq','t')
+
 line = "TB1,Republican,AR,Ted Cruz 27%-Marco Rubio 23%-Donald Trump 23%-Ben Carson 11%"
 line = line.strip()
 split = line.split('%')
