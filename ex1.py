@@ -1,4 +1,11 @@
 
+def File_Type(c):
+    dict = {'t':'txt','b':'bin'}
+    if dict.has_key(c):
+        return dict[c]
+    raise NameError('should be "t" or "b"')
+
+
 def printid ():
     return "318949443_208278861"
 
@@ -32,7 +39,7 @@ def addState(sid, sname,filetype):
     if filetype == 't':
         file = open('copystates.txt', 'a+')
     else:
-        file = open('copystates.bin', 'ab+')
+        file = open('copystatesbin.bin', 'ab+')
     context = file.readlines()
     existstate = False
     for line in context:
@@ -43,7 +50,6 @@ def addState(sid, sname,filetype):
             return "fail"
     file.write("%s,%s\n" % (sname, sid))
     file.close()
-
     return "fail"
 
 
@@ -53,6 +59,12 @@ def deleteState(sid,filetype):
 
 #check if the state is exists
 def addPoll(pid,party,state,res,filetype):
+    file = None
+    if filetype == 't':
+        file = open('copystates.txt', 'a+')
+    else:
+        file = open('copystates.bin', 'ab+')
+
     return "fail"
 
 
@@ -110,4 +122,4 @@ for line in con:
     print line.strip().split(',')[3]
 '''
 #addCandidate('eran','shvili','Democratic','t')
-addState('IS', 'Israel', 't')
+addState('IS', 'ISRAEL', 'b')
