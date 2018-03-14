@@ -4,38 +4,54 @@ def printid ():
 
 
 def addCandidate(fname, lname, party, filetype):
+    file = None
     if filetype == 't':
-        file = open("Candidates.txt", 'a+')
-        cid=0
-        context = reversed(file.readlines())
-        for line in context:
-            if party == line.strip().split(',')[3]:
-                cid = line.strip.split(',')[0]+1
-                break
-        file.write("%i,%s,%s,%s\n" % (cid,fname,lname,party))
+        file = open("can.txt", 'a+')
     else:
-        file = open("cab.bin", 'ab+')
-        cid = 0
-        context = reversed(file.readlines())
-        for line in context:
-            if party == line.strip().split(',')[3]:
-                cid = line.strip.split(',')[0] + 1
-                break
-        file.write("%i,%s,%s,%s"% (cid, fname, lname, party))
+        file = open("can.txt", 'a+b')
+    cid=0
+    context = reversed(file.readlines())
+    for line in context:
+        if party == line.strip().split(',')[3]:
+             cid = int(float(line.strip().split(',')[0]))+1
+             break
+    file.write("%i,%s,%s,%s\n" % (cid,fname,lname,party))
+    file.close()
+
+    ######################################
+    ###check what to return###############
+    ######################################
     return "fail"
 
 
 def deleteCandidate(cid,filetype):
-    #subprocess.call(['sed','-i','/.*204.*/d','can.txt'])
     return "fail"
 
 def addState(sid, sname,filetype):
+    file = None
+    if filetype == 't':
+        file = open('copystates.txt', 'a+')
+    else:
+        file = open('copystates.txt', 'ab+')
+    context = file.readlines()
+    existstate = False
+    for line in context:
+        li = line.strip().split(',')[1]
+        if sid == li:
+            print "fail"
+            file.close()
+            return "fail"
+    file.write("%s,%s\n" % (sname, sid))
+    file.close()
+
     return "fail"
 
 
 def deleteState(sid,filetype):
     return "fail"
 
+
+#check if the state is exists
 def addPoll(pid,party,state,res,filetype):
     return "fail"
 
@@ -93,4 +109,5 @@ con = reversed(open("Candidates.txt").readlines())
 for line in con:
     print line.strip().split(',')[3]
 '''
-addCandidate('michael','shvili','Republican','b')
+#addCandidate('eran','shvili','Democratic','t')
+addState('IS', 'Israel', 't')
