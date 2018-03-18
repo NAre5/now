@@ -148,11 +148,35 @@ def sort(filename,filetype,fieldname):
 
 def selectPollsFromStateAndParty(state,party,filetype):
     l = []
+    file = None
+    if filetype == 't':
+        file = open('copypolls.txt', 'r+')
+    else:
+        file = open('copypolls.bin', 'rb+')
+    context = file.readlines()
+    search = party+","+state
+    for line in context:
+        split = line.split(',')
+        stateAndParty = split[1]+","+split[2]
+        if search == stateAndParty:
+            l.append(line.strip())
+    file.close()
     return l
 
 
 def selectPollsForParty(party,filetype):
     l = []
+    file = None
+    if filetype == 't':
+        file = open('copypolls.txt', 'r+')
+    else:
+        file = open('copypolls.bin', 'rb+')
+    context = file.readlines()
+    for line in context:
+        split = line.split(',')
+        if party == split[1]:
+            l.append(line)
+    file.close()
     return l
 
 def find(filename,filetype,findme):
@@ -212,4 +236,5 @@ print split
 split = split[1:]
 print split
 '''
-addPoll("SH2","Republican","IS","Ted Cruz 27%-Marco Rubio 23%-michael shvili 23%-Ben Carson 11%","t")
+#addPoll("SH2","Republican","IS","Ted Cruz 27%-Marco Rubio 23%-michael shvili 23%-Ben Carson 11%","t")
+print selectPollsForParty("Republican","t")
