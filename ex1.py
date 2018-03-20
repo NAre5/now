@@ -1,4 +1,3 @@
-import subprocess
 
 def File_Type(c):
     dict = {'t':'txt','b':'bin'}
@@ -6,6 +5,11 @@ def File_Type(c):
         return dict[c]
     raise NameError('should be "t" or "b"')
 
+def mode(kind,c):
+    _type = {'t':{'r':'r','w':'w','r+':'r+','w+':'w+','a':'a+'},'b':{'r':'rb','w':'wb','r+':'rb+','w+':'wb+','a':'ab+'}}
+    if dict.has_key(c):
+        return dict[c][kind]
+    raise NameError('err')
 
 def printid ():
     return "208278861_318949443"
@@ -28,6 +32,16 @@ def delete_from(fileName,content):
     return "success"
 
 def deleteCandidate(cid,filetype):
+    File = open('Polls.' + File_Type(filetype), 'r+')
+    arr = [[]]
+    for line in File:
+        arr.append(line.strip().split(','))
+    arr.remove(arr[0])
+    states = [li[3] for li in (ar for ar in arr)]
+    print(states)
+    File.close()
+    if str(cid) in states:
+        return 'fail'
     return delete_from('Candidates.'+File_Type(filetype),cid)
 
 def addState(sid, sname,filetype):
@@ -35,6 +49,15 @@ def addState(sid, sname,filetype):
 
 
 def deleteState(sid,filetype):
+    File = open('Polls'+File_Type(filetype), 'r+')
+    arr = [[]]
+    for line in File:
+        arr.append(line.strip().split(','))
+    arr.remove(arr[0])
+    states = [li[1] for li in (ar for ar in arr)]
+    File.close()
+    if str(sid) in states:
+        return 'fail'
     return delete_from('States'+File_Type(filetype),sid)
 
 def addPoll(pid,party,state,res,filetype):
@@ -42,13 +65,6 @@ def addPoll(pid,party,state,res,filetype):
 
 
 def deletePoll(pid,filetype):
-    File = open('States'+File_Type(filetype), 'r+')
-    arr = [[]]
-    for line in File:
-        arr.append(line.strip().split(','))
-    arr.remove(arr[0])
-    names = [li[1] for li in (ar for ar in arr)]
-    File.close()
     return delete_from('Polls'+File_Type(filetype),pid)
 
 
