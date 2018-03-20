@@ -7,8 +7,8 @@ def File_Type(c):
 
 def mode(kind,c):
     _type = {'t':{'r':'r','w':'w','r+':'r+','w+':'w+','a':'a+'},'b':{'r':'rb','w':'wb','r+':'rb+','w+':'wb+','a':'ab+'}}
-    if dict.has_key(c):
-        return dict[c][kind]
+    if _type.has_key(c):
+        return _type[c][kind]
     raise NameError('err')
 
 def printid ():
@@ -94,7 +94,8 @@ def returnLine(filename,filetype,linenumber):
     return ""
 
 
-deleteCandidate(204,'t')
+#deleteCandidate(204,'t')
+print mode('r+','t')
 '''
 File = open('Candidates.txt', 'r+')
 arr=[[]]
