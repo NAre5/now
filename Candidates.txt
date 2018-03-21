@@ -2,6 +2,7 @@ CID,fname,lname,party
 201,Donald,Trump,Republican
 202,Marco,Rubio,Republican
 203,Ted,Cruz,Republican
+204,John,Kasich,Republican
 205,Carly,Fiorina,Republican
 206,Ben,Carson,Republican
 101,Hillary,Clinton,Democratic
