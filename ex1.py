@@ -213,9 +213,7 @@ def updateStates(recordId, fieldname,newValue,filetype):
     if fieldname == "sname":
         col_e = indexof(temp, ',', 1)
     else:
-        col_s = indexof(temp,',',1)+1
-        col_e = str(temp).__len__()
-        newValue = newValue+"\n"
+        return "fail"
     temp = temp.replace(temp[col_s:col_e], newValue)
     lines[recordId] = temp
     out = open("copystates." + File_Type(filetype), mode('w', filetype))
