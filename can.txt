@@ -12,6 +12,6 @@ CID,fname,lname,party
 104,michael,shvili,Democratic
 105,michael,shvili,Democratic
 106,eran,shvili,Democratic
-107,eran,shvili,Democratic
+107,eran,shvili,Repu
 108,eran,shvili,Democratic
 109,eran,shvili,Democratic

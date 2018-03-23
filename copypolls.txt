@@ -11,5 +11,4 @@ PB2,Democratic,OH,Hillary Clinton 56%-Bernie Sanders 35%
 CT2,Democratic,IL,Hillary Clinton 67%-Bernie Sanders 25%
 SC2,Democratic,NY,Hillary Clinton 55%-Bernie Sanders 34%
 DJ1,Democratic,ID,Bernie Sanders 47%-Hillary Clinton 45%
-SH1,Republican,IS,Ted Cruz 27%-Marco Rubio 23%-michael shvili 23%-Ben Carson 11%
-FX2,Republican,MI,Hillary Clinton 61%-Bernie Sanders 34%
+SH2,Republican,IS,Ted Cruz 27%-Marco Rubio 23%-michael shvili 23%-Ben Carson 11%

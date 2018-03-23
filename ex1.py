@@ -1,3 +1,16 @@
+
+def File_Type(c):
+    dict = {'t':'txt','b':'bin'}
+    if dict.has_key(c):
+        return dict[c]
+    raise NameError('should be "t" or "b"')
+
+def mode(kind,c):
+    _type = {'t':{'r':'r','w':'w','r+':'r+','w+':'w+','a':'a','a+':'a+'},'b':{'r':'rb','w':'wb','r+':'rb+','w+':'wb+','a':'ab','a+':'ab+'}}
+    if _type.has_key(c):
+        return _type[c][kind]
+    raise NameError('err')
+
 def printid ():
     return "318949443_208278861"
 
@@ -5,11 +18,7 @@ def printid ():
 def addCandidate(fname, lname, party, filetype):
     if party != "Democratic" or party != "Republican":
         return "fail"
-    file = None
-    if filetype == 't':
-        file = open("can.txt", 'a+')
-    else:
-        file = open("can.txt", 'a+b')
+    file = open("can." + File_Type(filetype), mode('a+', filetype))
     cid=0
     context = reversed(file.readlines())
     for line in context:
@@ -22,18 +31,15 @@ def addCandidate(fname, lname, party, filetype):
     ######################################
     ###check what to return###############
     ######################################
-    return "fail"
+    return "pass"
 
 
 def deleteCandidate(cid,filetype):
     return "fail"
 
 def addState(sid, sname,filetype):
-    file = None
-    if filetype == 't':
-        file = open('copystates.txt', 'a+')
-    else:
-        file = open('copystatesbin.bin', 'ab+')
+    file = open("copystates." + File_Type(filetype), mode('a+', filetype))
+
     context = file.readlines()
     for line in context:
         line = line.strip().split(',')[1]
@@ -138,8 +144,149 @@ def deletePoll(pid,filetype):
 
 
 ## recordId: id of the record that should be updated, fieldname: field to update, newValue: new value in field name.
+def indexof(haystack, needle, n):
+    start = haystack.find(needle)
+    while start >= 0 and n > 1:
+        start = haystack.find(needle, start+1)
+        n -= 1
+    return start
+def updateCandidates(recordId, fieldname,newValue,filetype):
+    mainFile = open("can."+File_Type(filetype), mode('r',filetype))
+    lines = mainFile.readlines()
+    mainFile.close()
+    temp = lines[recordId]
+    col_s = 0
+    col_e = 0
+    if fieldname == "CID":
+        return "fail"
+    elif str(fieldname) == "fname":
+        files = open("copypolls." + File_Type(filetype), mode('r', filetype))
+        file = files.readlines()
+        files.close()
+        i = 0
+        for line in file:
+            l = temp.split(',')[1] + ' ' + temp.split(',')[2]
+            if line.split(',')[1] == str(temp).split(',')[3].strip() and (l in line):
+                return "fail"
+            i = i + 1
+        col_s = indexof(temp, ',', 1) + 1
+        col_e = indexof(temp, ',', 2)
+    elif str(fieldname) == "lname":
+        files = open("copypolls." + File_Type(filetype), mode('r', filetype))
+        file = files.readlines()
+        files.close()
+        i = 0
+        for line in file:
+            if line.split(',')[1] == str(temp).split(',')[3].strip() and (temp.split(',')[1] + ' ' + temp.split(',')[2]) in line:
+                return "fail"
+            i = i + 1
+        col_s = indexof(temp, ',', 2) + 1
+        col_e = indexof(temp, ',', 3)
+    else:
+        canChange = True
+        files = open("copypolls." + File_Type(filetype), mode('r', filetype))
+        file = files.readlines()
+        files.close()
+        for line in file:
+            if str(temp).split(',')[3].strip() in line and (temp.split(',')[1] + ' ' + temp.split(',')[2]) in line:
+                canChange = False
+        if not canChange:
+            return "fail"
+        col_s = indexof(temp, ',', 3) + 1
+        col_e = str(temp).__len__()
+        newValue = newValue + "\n"
+    temp = temp.replace(temp[col_s:col_e], newValue)
+    lines[recordId] = temp
+    out = open("can."+File_Type(filetype), mode('w',filetype))
+    out.writelines(lines)
+    out.close()
+    return "pass"
+
+
+def updateStates(recordId, fieldname,newValue,filetype):
+    file = open("copystates." + File_Type(filetype), mode('r', filetype))
+    lines = file.readlines()
+    temp = lines[recordId]
+    file.close()
+    col_s = 0
+    col_e = 0
+    if fieldname == "sname":
+        col_e = indexof(temp, ',', 1)
+    else:
+        col_s = indexof(temp,',',1)+1
+        col_e = str(temp).__len__()
+        newValue = newValue+"\n"
+    temp = temp.replace(temp[col_s:col_e], newValue)
+    lines[recordId] = temp
+    out = open("copystates." + File_Type(filetype), mode('w', filetype))
+    out.writelines(lines)
+    out.close()
+    return "pass"
+
+
+def updatePolls(recordId, fieldname, newValue, filetype):
+    file = open("copypolls." + File_Type(filetype), mode('r', filetype))
+    lines = file.readlines()
+    temp = lines[recordId]
+    file.close()
+    col_s = 0
+    col_e = 0
+    if fieldname == "pid":
+        return "fail"
+    elif fieldname == "party":
+        return "fail"
+    elif fieldname == "state":
+        return "fail"
+    else:
+        split = newValue.split('%')
+        split = split[:-1]
+        sumPrecent = 0
+        for i in split:
+            sumPrecent = sumPrecent + int(float(i.split(' ')[-1]))
+        if sumPrecent > 100:
+            return "fail"
+        fileCand = open("can." + File_Type(filetype), mode('r', filetype))
+        context = fileCand.readlines()
+        fileCand.close()
+        split = newValue.replace('%-', '%')
+        split = split.split('%')
+        split = split[:-1]
+        i = 0
+        for part in split:
+            part = str(part)
+            part = part.split(' ')[:2]
+            split[i] = part[0] + "," + part[1] + "," + lines[recordId].split(',')[1]
+            candidFound = False
+            for line in context:
+                line = line.split(',')[1:]
+                line = line[0] + "," + line[1] + "," + line[2]
+                line = line.strip()
+                if split[i] == line:
+                    candidFound = True
+                    break
+            if not candidFound:
+                print "fail candidate did not found"
+                return "fail"
+            i = i + 1
+        col_s = indexof(temp, ',', 3) + 1
+        col_e = str(temp).__len__()
+        newValue = newValue + "\n"
+    temp = temp.replace(temp[col_s:col_e], newValue)
+    lines[recordId] = temp
+    out = open("copystates." + File_Type(filetype), mode('w', filetype))
+    out.writelines(lines)
+    out.close()
+    return "pass"
+
 def updateFile(recordId,fieldname,newValue,file,filetype):
-	return "fail"
+    res = ""
+    if file=='Candidates':
+         res = updateCandidates(int(recordId),fieldname,newValue,filetype)
+    elif file=='States':
+        res = updateStates(int(recordId),fieldname,newValue,filetype)
+    else:
+        res = updatePolls(int(recordId), fieldname, newValue, filetype)
+    return res
 
 
 def sort(filename,filetype,fieldname):
@@ -175,7 +322,7 @@ def selectPollsForParty(party,filetype):
     for line in context:
         split = line.split(',')
         if party == split[1]:
-            l.append(line)
+            l.append(line.strip())
     file.close()
     return l
 
@@ -237,4 +384,5 @@ split = split[1:]
 print split
 '''
 #addPoll("SH2","Republican","IS","Ted Cruz 27%-Marco Rubio 23%-michael shvili 23%-Ben Carson 11%","t")
-print selectPollsForParty("Republican","t")
+
+#print updateFile(10, 'party', "Democratic", "Candidates",'b')
