@@ -1,9 +1,9 @@
 sname,sid
 Arkansas,AR
 California,CA
-Florida,FL
+United Kingdom,FL
 Idaho,ID
-Illinois,IL
+Israel,IL
 Indiana,IN
 Maryland,MD
 Michigan,MI
@@ -11,3 +11,6 @@ Nevada,NV
 New York,NY
 Texas,TX
 Ohio,OH
+ISRAEL,IS
+Argentina,AG
+Argentina,FE

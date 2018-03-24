@@ -7,11 +7,10 @@ CID,fname,lname,party
 206,Ben,Carson,Republican
 101,Hillary,Clinton,Democratic
 102,Bernie,Sanders,Democratic
-103,Martin,O'Malley,Democratic
+103,Dana,O'Malley,Democratic
 207,michael,shvili,Republican
-104,michael,shvili,Democratic
-105,michael,shvili,Democratic
-106,eran,shvili,Democratic
-107,eran,shvili,Repu
-108,eran,shvili,Democratic
-109,eran,shvili,Democratic
+104,Bibi,Nethanyahu,Democratic
+105,Israel,Katz,Democratic
+208,Avigdor,Liberman,Republican
+209,Bibi,Nethanyahu,Democratic
+210,Yair,Lapid,Democratic
