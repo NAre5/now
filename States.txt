@@ -9,5 +9,5 @@ Maryland,MD
 Michigan,MI
 Nevada,NV
 New York,NY
-Texas,TX
 Ohio,OH
+Texas,TX

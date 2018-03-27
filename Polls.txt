@@ -1,13 +1,13 @@
 pid,party,state,res
-FX1,Republican,MI,Donald Trump 41%-John Kasich 23%-Ted Cruz 18%-Marco Rubio 8%
-PB1,Republican,OH,Donald Trump 38%-John Kasich 35%-Ted Cruz 15%-Marco Rubio 5%
-MU1,Republican,FL,Donald Trump 38%-Marco Rubio 30%-Ted Cruz 17%-John Kasich 10%
-CT1,Republican,IL,Donald Trump 32%-Ted Cruz 22%-Marco Rubio 21%-John Kasich 18%
-SC5,Republican,NY,Donald Trump 45%-Marco Rubio 18%-John Kasich 18%-Ted Cruz 11%
-TB1,Republican,AR,Ted Cruz 27%-Marco Rubio 23%-Donald Trump 23%-Ben Carson 11%
 FX2,Democratic,MI,Hillary Clinton 61%-Bernie Sanders 34%
 BN1,Democratic,FL,Hillary Clinton 61%-Bernie Sanders 30%
 PB2,Democratic,OH,Hillary Clinton 56%-Bernie Sanders 35%
 CT1,Democratic,IL,Hillary Clinton 67%-Bernie Sanders 25%
 SC2,Democratic,NY,Hillary Clinton 55%-Bernie Sanders 34%
 DJ1,Democratic,ID,Bernie Sanders 47%-Hillary Clinton 45%
+FX1,Republican,MI,Donald Trump 41%-John Kasich 23%-Ted Cruz 18%-Marco Rubio 8%
+PB1,Republican,OH,Donald Trump 38%-John Kasich 35%-Ted Cruz 15%-Marco Rubio 5%
+MU1,Republican,FL,Donald Trump 38%-Marco Rubio 30%-Ted Cruz 17%-John Kasich 10%
+CT1,Republican,IL,Donald Trump 32%-Ted Cruz 22%-Marco Rubio 21%-John Kasich 18%
+SC5,Republican,NY,Donald Trump 45%-Marco Rubio 18%-John Kasich 18%-Ted Cruz 11%
+TB1,Republican,AR,Ted Cruz 27%-Marco Rubio 23%-Donald Trump 23%-Ben Carson 11%
