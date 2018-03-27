@@ -1,25 +1,35 @@
+import operator
 
-def File_Type(c):
+def File_Type(filetype):
     dict = {'t':'txt','b':'bin'}
-    if dict.has_key(c):
-        return dict[c]
+    if dict.has_key(filetype):
+        return dict[filetype]
     raise NameError('should be "t" or "b"')
 
-def mode(kind,c):
-    _type = {'t':{'r':'r','w':'w','r+':'r+','w+':'w+','a':'a','a+':'a+'},'b':{'r':'rb','w':'wb','r+':'rb+','w+':'wb+','a':'ab','a+':'ab+'}}
-    if _type.has_key(c):
-        return _type[c][kind]
-    raise NameError('err')
+def mode(kind, filetype):
+    _type = {'t':{'r':'r','w':'w','r+':'r+','w+':'w+','a':'a','a+':'a+'},
+             'b':{'r':'rb','w':'wb','r+':'rb+','w+':'wb+','a':'ab','a+':'ab+'}}
+    if _type.has_key(filetype):
+        return _type[filetype][kind]
+    raise NameError('err in mode')
 
 def printid ():
-    return "318949443_208278861"
+    return "208278861_318949443"
 
 
 # Add candidate to the party
 def addCandidate(fname, lname, party, filetype):
+    '''
+
+    :param fname: first name of the new candidate
+    :param lname: last name of the new candidate
+    :param party: The party the candidate belong to
+    :param filetype: the file we want to work with
+    :return: return pass if the candidate added to the file
+    '''
     if party != "Democratic" and party != "Republican":
         return "fail"
-    file = open("can." + File_Type(filetype), mode('a+', filetype))
+    file = open("Candidates." + File_Type(filetype), mode('a+', filetype))
     cid=0
     #search for the end for the last candidate from 'party'
     context = reversed(file.readlines())
@@ -31,13 +41,75 @@ def addCandidate(fname, lname, party, filetype):
     file.close()
     return "pass"
 
+def delete_from(fileName, key, filetype):
+    """
+
+    :param fileName: the name of the file we want to delete from
+    :param key: the key of the record we want to delete
+    :param filetype: the type of the file we want to delete from
+    :return: if the deletion is valid and we succeeded to delete
+    """
+
+    File = open(fileName+'.'+File_Type(filetype), mode("r+",filetype))
+    Lines = File.readlines()
+    File.seek(0)
+    column = 0 + (fileName == 'States')
+    flag=False
+    for line in Lines:
+        splitted = line.strip().split(',')
+        if str(key) == splitted[column]:
+            flag=True
+            continue
+        File.write(line)
+    File.truncate()
+    File.close()
+    return "pass" if flag else 'fail'
 
 def deleteCandidate(cid,filetype):
-    return "fail"
+    """
+    The function delete a candidate from the candidates file if the deletion is valid
+    :param cid: the key of the record we want to delete
+    :param filetype: the type of file we want to delete from
+    :return: if the deletion is valid and we succeeded to delete
+    """
 
-#Add state to data
+    File = open('Polls.' + File_Type(filetype), 'r+')
+    arr = [[]]
+    for line in File:
+        arr.append(line.strip().split(','))
+    File.close()
+    arr.remove(arr[0])
+    candidates = [li[3] for li in (ar for ar in arr)][1:]
+    for i in range(candidates.__len__()):
+        candidates[i] = candidates[i].replace('%-', '%')
+        candidates[i] = candidates[i].split('%')[:-1]
+        for j in range(candidates[i].__len__()):
+            candidates[i][j] = candidates[i][j].split(' ')[:-1]
+
+    candidates = [candidates[i][j] for i in range(candidates.__len__()) for j in range(candidates[i].__len__())]
+    File = open('Candidates.' + File_Type(filetype), 'r+')
+    all_candidates = [[]]
+    for line in File:
+        all_candidates.append(line.strip().split(',')[0:3])
+    all_candidates = all_candidates[2:]
+    File.close()
+
+
+    for i in range(all_candidates.__len__()):
+        if all_candidates[i][0]==str(cid):
+            if all_candidates[i][1:] in candidates:
+                return 'fail'
+    return delete_from('Candidates',cid,filetype)
+
 def addState(sid, sname,filetype):
-    file = open("copystates." + File_Type(filetype), mode('a+', filetype))
+    '''
+
+    :param sid: The key of the table, the ID of state
+    :param sname:  name of the state
+    :param filetype: the filr we work with him
+    :return: pass if succeed. else "fail"
+    '''
+    file = open("States." + File_Type(filetype), mode('a+', filetype))
     context = file.readlines()
 
     # check that sid is not exist because is the key in this database
@@ -52,10 +124,34 @@ def addState(sid, sname,filetype):
 
 
 def deleteState(sid,filetype):
-    return "fail"
+    """
+        The function delete a state from the states file if the deletion is valid
+        :param sid: the key of the record we want to delete
+        :param filetype: the type of file we want to delete from
+        :return: if the deletion is valid and we succeeded to delete
+        """
 
+    File = open('Polls.'+File_Type(filetype), 'r+')
+    arr = [[]]
+    for line in File:
+        arr.append(line.strip().split(','))
+    arr.remove(arr[0])
+    states = [li[2] for li in (ar for ar in arr)]
+    File.close()
+    if str(sid) in states:
+        return 'fail'
+    return delete_from('States',sid,filetype)
 
 def addPoll(pid, party, state, res, filetype):
+    '''
+
+    :param pid: the key of the table, ID of poll
+    :param party: the praty the poll belong to
+    :param state: the state where the poll conducted
+    :param res: the result of the poll
+    :param filetype: the file we work with him
+    :return: pass if the addition succeed. else "fail"
+    '''
     if party != "Democratic" and party != "Republican":
         return "fail"
 
@@ -73,9 +169,9 @@ def addPoll(pid, party, state, res, filetype):
 
     #check candidates to be in the Candidates file
     if filetype == 't':
-        file = open('can.txt', 'r+')
+        file = open('Candidates.txt', 'r+')
     else:
-        file = open('can.bin', 'rb+')
+        file = open('Candidates.bin', 'rb+')
     context = file.readlines()
     file.close()
 
@@ -100,7 +196,7 @@ def addPoll(pid, party, state, res, filetype):
         i = i + 1
 
     # check that state exist in States file
-    file = open("copystates." + File_Type(filetype), mode('r+', filetype))
+    file = open("States." + File_Type(filetype), mode('r+', filetype))
     context = file.readlines()
     file.close()
 
@@ -116,9 +212,9 @@ def addPoll(pid, party, state, res, filetype):
 
     #check that pid is not exists because is the key in this file
     if filetype == 't':
-        file = open('copypolls.txt', 'a+')
+        file = open('Polls.txt', 'a+')
     else:
-        file = open('copypolls.bin', 'ab+')
+        file = open('Polls.bin', 'ab+')
     context = file.readlines()
     for line in context:
         line = line.split(',')[0]
@@ -130,7 +226,13 @@ def addPoll(pid, party, state, res, filetype):
 
 
 def deletePoll(pid,filetype):
-    return "fail"
+    """
+    The function delete a poll from the polls file if the deletion is valid
+    :param cid: the key of the record we want to delete
+    :param filetype: the type of file we want to delete from
+    :return: if the deletion is valid and we succeeded to delete
+    """
+    return delete_from('Polls',pid,filetype)
 
 
 ## recordId: id of the record that should be updated, fieldname: field to update, newValue: new value in field name.
@@ -145,7 +247,14 @@ def indexof(haystack, needle, n):
 
 
 def updateCandidates(recordId, fieldname,newValue,filetype):
-    mainFile = open("can."+File_Type(filetype), mode('r',filetype))
+    '''
+    :param recordId: number of line we want to update
+    :param fieldname: the field we want to change
+    :param newValue: the new Value to be replace
+    :param filetype: the file we want to work with him
+    :return: pass if the update succeed
+    '''
+    mainFile = open("Candidates."+File_Type(filetype), mode('r',filetype))
     lines = mainFile.readlines()
     mainFile.close()
     temp = lines[recordId]
@@ -155,7 +264,7 @@ def updateCandidates(recordId, fieldname,newValue,filetype):
     if fieldname == "CID":
         return "fail"
     elif str(fieldname) == "fname":
-        files = open("copypolls." + File_Type(filetype), mode('r', filetype))
+        files = open("Polls." + File_Type(filetype), mode('r', filetype))
         file = files.readlines()
         files.close()
         i = 0
@@ -169,7 +278,7 @@ def updateCandidates(recordId, fieldname,newValue,filetype):
         col_e = indexof(temp, ',', 2)
     elif str(fieldname) == "lname":
 
-        files = open("copypolls." + File_Type(filetype), mode('r', filetype))
+        files = open("Polls." + File_Type(filetype), mode('r', filetype))
         file = files.readlines()
         files.close()
         i = 0
@@ -182,7 +291,7 @@ def updateCandidates(recordId, fieldname,newValue,filetype):
         col_e = indexof(temp, ',', 3)
     else:
         canChange = True
-        files = open("copypolls." + File_Type(filetype), mode('r', filetype))
+        files = open("Polls." + File_Type(filetype), mode('r', filetype))
         file = files.readlines()
         files.close()
         # check if the candidate exists in any poll
@@ -196,14 +305,22 @@ def updateCandidates(recordId, fieldname,newValue,filetype):
         newValue = newValue + "\n"
     temp = temp.replace(temp[col_s:col_e], newValue)
     lines[recordId] = temp
-    out = open("can."+File_Type(filetype), mode('w',filetype))
+    out = open("Candidates."+File_Type(filetype), mode('w',filetype))
     out.writelines(lines)
     out.close()
     return "pass"
 
 
 def updateStates(recordId, fieldname,newValue,filetype):
-    file = open("copystates." + File_Type(filetype), mode('r', filetype))
+    '''
+
+    :param recordId: number of line we want to update
+    :param fieldname: the field we want to change
+    :param newValue: the new Value to be replace
+    :param filetype: the file we want to work with him
+    :return: pass if the update succeed
+    '''
+    file = open("States." + File_Type(filetype), mode('r', filetype))
     lines = file.readlines()
     temp = lines[recordId]
     file.close()
@@ -215,14 +332,22 @@ def updateStates(recordId, fieldname,newValue,filetype):
         return "fail"
     temp = temp.replace(temp[col_s:col_e], newValue)
     lines[recordId] = temp
-    out = open("copystates." + File_Type(filetype), mode('w', filetype))
+    out = open("States." + File_Type(filetype), mode('w', filetype))
     out.writelines(lines)
     out.close()
     return "pass"
 
 
 def updatePolls(recordId, fieldname, newValue, filetype):
-    file = open("copypolls." + File_Type(filetype), mode('r', filetype))
+    '''
+
+    :param recordId: number of line we want to update
+    :param fieldname: the field we want to change
+    :param newValue: the new Value to be replace
+    :param filetype: the file we want to work with him
+    :return: pass if the update succeed
+    '''
+    file = open("Polls." + File_Type(filetype), mode('r', filetype))
     lines = file.readlines()
     temp = lines[recordId]
     file.close()
@@ -233,7 +358,7 @@ def updatePolls(recordId, fieldname, newValue, filetype):
     elif fieldname == "party":
         return "fail"
     elif fieldname == "state":
-        fileState = open("copystates." + File_Type(filetype), mode('r', filetype))
+        fileState = open("States." + File_Type(filetype), mode('r', filetype))
         sids = fileState.readlines()
         fileState.close()
         stateExist = False
@@ -255,7 +380,7 @@ def updatePolls(recordId, fieldname, newValue, filetype):
             sumPrecent = sumPrecent + int(float(i.split(' ')[-1]))
         if sumPrecent > 100:
             return "fail"
-        fileCand = open("can." + File_Type(filetype), mode('r', filetype))
+        fileCand = open("Candidates." + File_Type(filetype), mode('r', filetype))
         context = fileCand.readlines()
         fileCand.close()
         split = newValue.replace('%-', '%')
@@ -282,13 +407,22 @@ def updatePolls(recordId, fieldname, newValue, filetype):
         newValue = newValue + "\n"
     temp = temp.replace(temp[col_s:col_e], newValue)
     lines[recordId] = temp
-    out = open("copypolls." + File_Type(filetype), mode('w', filetype))
+    out = open("Polls." + File_Type(filetype), mode('w', filetype))
     out.writelines(lines)
     out.close()
     return "pass"
 
 
 def updateFile(recordId,fieldname,newValue,file,filetype):
+    '''
+    we splitted the function for 3 function. each one to work according to the file we want to update
+    :param recordId: number of line we want to update
+    :param fieldname: the field we want to change
+    :param newValue: the new Value to be replace
+    :param file: the file witch be updated
+    :param filetype: the file we want to work with him
+    :return: pass if the update succeed
+    '''
     res = ""
     if file=='Candidates':
          res = updateCandidates(int(recordId),fieldname,newValue,filetype)
@@ -300,13 +434,48 @@ def updateFile(recordId,fieldname,newValue,file,filetype):
 
 
 def sort(filename,filetype,fieldname):
-    return "fail"
+    '''
+
+    :param filename: the file we work with
+    :param filetype: the kind of file
+    :param fieldname:the column we sort according to
+    :return: passs if secceed. else fail if column not exists
+    '''
+    File = open(filename + '.' + File_Type(filetype), mode("r+", filetype))
+    Title = File.readline()
+    splittedTitle = Title.strip().split(',')
+    dict = {}
+    for i in range(splittedTitle.__len__()):
+        dict[splittedTitle[i]] = i
+    if not dict.has_key(fieldname):
+        File.close()
+        return 'fail'
+    File.seek(0)
+    File.seek(File.readline().__len__() + (filetype=='t'))
+    lines = [line.split(',') for line in File]
+    File.close()
+    File = open(filename + '.' + File_Type(filetype), mode("w", filetype))
+    File.write(Title)
+
+    SOSO = sorted(lines, key=operator.itemgetter(dict[fieldname]))
+    for line in SOSO:
+        File.write(','.join(line))
+    File.close()
+    return "pass"
+
 
 
 # return all polls that belongs to 'party' and conducted at 'state'
 def selectPollsFromStateAndParty(state,party,filetype):
+    '''
+
+    :param state: the state that we want the polls that conducted there
+    :param party: the party that we want the polls that conducted for her
+    :param filetype: the file we work with
+    :return: list of the polls that appropriate
+    '''
     l = []
-    file = open("copypolls." + File_Type(filetype), mode('r+', filetype))
+    file = open("Polls." + File_Type(filetype), mode('r+', filetype))
     context = file.readlines()
     search = party+","+state
     for line in context:
@@ -319,8 +488,14 @@ def selectPollsFromStateAndParty(state,party,filetype):
 
 # return all polls that belongs to 'party'
 def selectPollsForParty(party,filetype):
+    '''
+
+    :param party: the party that we want the polls that conducted for her
+    :param filetype: the file we work with
+    :return: list of polls that appropriate
+    '''
     l = []
-    file = open("copypolls." + File_Type(filetype), mode('r+', filetype))
+    file = open("Polls." + File_Type(filetype), mode('r+', filetype))
     context = file.readlines()
     for line in context:
         split = line.split(',')
@@ -330,9 +505,40 @@ def selectPollsForParty(party,filetype):
     return l
 
 def find(filename,filetype,findme):
+    """
+
+    :param filename: the name of the file we want to search in
+    :param filetype: the type of the file we want to search in
+    :param findme: the content we search in the file
+    :return: the number of the line the variable 'findme' appears
+    """
+    File = open(filename+'.'+File_Type(filetype), mode("r+",filetype))
+    Lines = File.readlines()
+    File.close()
+    for i in range(Lines.__len__()):
+        if str(findme) in Lines[i]:
+            return i
     return -1
 
 
 def returnLine(filename,filetype,linenumber):
-    return ""
+    """
 
+    :param filename: the name of the file we want to search in
+    :param filetype: the type of the file we want to search in
+    :param linenumber: the number of the line we want to have its key
+    if the number is negative the number of the line will be counted from the end
+    :return: the key of the requested line
+    """
+
+    File = open(filename+ '.' + File_Type(filetype), mode("r+", filetype))
+    Lines = File.readlines()
+    File.close()
+    if int(linenumber) >= Lines.__len__():
+        return "fail"
+    column = 0+ (filename=='States')
+    row = int(linenumber) if linenumber>=0 else int(linenumber)+Lines.__len__()
+    return str(Lines[row]).strip().split(',')[column]
+
+
+print sort('Candidates','b','CID')
